@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Tetris\Shader.ixx">
+    <ClCompile Include="VertexArray.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VertexArray.ixx">
+    <ClCompile Include="Shader.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
