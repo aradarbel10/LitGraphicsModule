@@ -21,5 +21,11 @@
     <ClCompile Include="Shader.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Window.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tuple.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

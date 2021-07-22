@@ -20,7 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.ixx" />
+    <ClCompile Include="Tuple.ixx" />
     <ClCompile Include="VertexArray.ixx" />
+    <ClCompile Include="Window.ixx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
