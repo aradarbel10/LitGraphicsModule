@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Polygon.ixx" />
     <ClCompile Include="Shader.ixx" />
     <ClCompile Include="Tuple.ixx" />
     <ClCompile Include="VertexArray.ixx" />

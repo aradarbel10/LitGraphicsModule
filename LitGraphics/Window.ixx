@@ -61,7 +61,7 @@ namespace lgm {
 	private:
 
 		GLFWwindow* window;
-		lgm::color background{0.18f, 0.38f, 0.14f, 1.0f};
+		lgm::color background{0.78f, 0.78f, 0.78f, 1.0f};
 
 	};
 }

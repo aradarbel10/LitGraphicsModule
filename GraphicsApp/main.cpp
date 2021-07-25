@@ -8,10 +8,12 @@
 import Shader;
 import VertexArray;
 import Window;
+import Tuple;
+import Polygon;
 
 int main() {
 	// opening a window using GLFW
-	lgm::Window window(lgm::vector2i{ 600, 600 }, "Lit Graphics Module!");
+	lgm::Window window(lgm::vector2i{ 600, 600 }, "Lit Graphics!");
 	//window.setBackgroundColor({0.08f, 0.55f, 0.63f, 1.0f});
 
 	// constructing polygons
@@ -41,16 +43,48 @@ int main() {
 		5, 4, 1
 	};
 
+	//pentagon construction
+	lgm::Polygon pentagon;
+	pentagon.pushVertex({ 0.309, 0.9511 })
+		.pushVertex({ 1, 0 })
+		.pushVertex({ 0.309, -0.9511 })
+		.pushVertex({ -0.809, -0.5878 })
+		.pushVertex({ -0.809, 0.5878 })
+		.triangulate();
+
+	//weird shape
+	lgm::Polygon triangulationTest;
+	triangulationTest.setColor({ 0.47f, 0.85f, 0.74f, 1.0f });
+	triangulationTest.pushVertex({ -0.2f, 0.0f })
+		.pushVertex({ 0.0f, 0.9f })
+		.pushVertex({ 0.0f, 0.0f })
+		.pushVertex({ 0.6f, 0.0f })
+		.pushVertex({ 0.45f, 0.5f })
+		.pushVertex({ 0.25f, 0.4f })
+		.pushVertex({ 0.4f, 0.8f })
+		.pushVertex({ 0.9f, 0.2f })
+		.pushVertex({ 0.5f, -0.5f })
+		.pushVertex({ 0.0f, -0.7f })
+		.pushVertex({ -0.5f, -0.5f })
+		.triangulate();
+
 	// create the shaders themselves inside openGL
 	
 	lgm::Shader vertexShader(GL_VERTEX_SHADER, "shaders/default_vertex.glsl");
 	lgm::Shader fragmentShader(GL_FRAGMENT_SHADER, "shaders/default_fragment.glsl");
 
+	lgm::Shader meshVertexShader(GL_VERTEX_SHADER, "shaders/mesh_vertex.glsl");
+	lgm::Shader meshFragmentShader(GL_FRAGMENT_SHADER, "shaders/mesh_fragment.glsl");
+
 	// link shaders into one shader program
 
-	lgm::ShaderProgram shaderProgram; 
+	lgm::ShaderProgram shaderProgram;
 	shaderProgram << vertexShader.get() << fragmentShader.get();
 	shaderProgram.link();
+
+	lgm::ShaderProgram meshShaderProgram;
+	meshShaderProgram << meshVertexShader.get() << meshFragmentShader.get();
+	meshShaderProgram.link();
 
 	// pack a vertex buffer object which will be sent to the GPU
 	
@@ -68,10 +102,8 @@ int main() {
 	while (window.isOpen()) {
 		glfwPollEvents();
 
-		// run shader program on GPU
-		shaderProgram.use();
-		VAO.bind();
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		// Draw Shapes!
+		triangulationTest.draw(shaderProgram, true);
 
 		// swap buffers
 		window.display();

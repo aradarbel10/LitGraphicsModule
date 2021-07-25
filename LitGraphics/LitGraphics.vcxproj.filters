@@ -27,5 +27,8 @@
     <ClCompile Include="Tuple.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Polygon.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

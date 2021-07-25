@@ -23,10 +23,16 @@ namespace lgm {
 	class BufferObject {
 	public:
 
+		BufferObject() = default;
+
 		BufferObject(std::span<T> vertices) {
+			constructData(vertices.data(), vertices.size_bytes());
+		}
+
+		void constructData(T* data, size_t size) {
 			glGenBuffers(1, &buffer);
 			glBindBuffer(B, buffer);
-			glBufferData(B, vertices.size_bytes(), vertices.data(), GL_STATIC_DRAW);
+			glBufferData(B, size, data, GL_STATIC_DRAW);
 			glBindBuffer(B, 0);
 		}
 
@@ -45,6 +51,11 @@ namespace lgm {
 		size_t addAttrib(const VertexAttribFormat& attr) {
 			attribs.push_back(attr);
 			return attribs.size() - 1;
+		}
+
+		size_t setAttrib(GLuint index, const VertexAttribFormat& attr) {
+			attribs[index] = attr;
+			return index;
 		}
 
 		const std::vector<VertexAttribFormat>& getAttribs() const {

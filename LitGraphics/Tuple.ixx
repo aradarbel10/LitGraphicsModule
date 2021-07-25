@@ -4,7 +4,17 @@ export namespace lgm {
 
 	template <typename T>
 	struct vector2 {
+		vector2(T x_, T y_) : x(x_), y(y_) { }
+
 		T x, y;
+
+		vector2<T> operator+(const vector2<T>& other) const {
+			return { x + other.x, y + other.y };
+		}
+
+		vector2<T> operator-(const vector2<T>& other) const {
+			return { x - other.x, y - other.y };
+		}
 	};
 	typedef vector2<int> vector2i;
 	typedef vector2<float> vector2f;
@@ -21,7 +31,9 @@ export namespace lgm {
 	struct color {
 		color(float _r, float _g, float _b, float _a = 1.0f)
 			: r(_r), g(_g), b(_b), a(_a) {};
-		float r, g, b, a;
+		float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
+
+		color() = default;
 
 		void normalize() {
 			r /= 255.f;

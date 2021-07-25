@@ -7,6 +7,8 @@ module;
 
 export module Shader;
 
+import Tuple;
+
 namespace lgm {
 	export class Shader {
 	public:
@@ -77,6 +79,11 @@ namespace lgm {
 
 		void use() const {
 			glUseProgram(program);
+		}
+
+		void setColorUniform(const lgm::color c) const {
+			GLuint loc = glGetUniformLocation(program, "color");
+			glUniform4f(loc, c.r, c.g, c.b, c.a);
 		}
 
 		~ShaderProgram() {
