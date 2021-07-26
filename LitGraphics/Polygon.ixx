@@ -43,11 +43,14 @@ namespace lgm {
 	public:
 
 		Polygon() {
+			if (!shaderProgram) {
+				shaderProgram = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
+				//std::cout << "first polygon initialized!\n";
+			}
 		}
 
 		Polygon& pushVertex(const lgm::vector2f& point) {
-			vertices.push_back(point.x);
-			vertices.push_back(point.y);
+			vertices.push_back(point);
 			return *this;
 		}
 
@@ -68,23 +71,24 @@ namespace lgm {
 			vao.bind();
 			sdr.setColorUniform(color);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDrawElements(GL_TRIANGLES, (vertices.size() / 2) * 3, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, (vertices.size()) * 3, GL_UNSIGNED_INT, 0);
 
 			if (drawMesh) {
 				sdr.setColorUniform({ 1.0f, 0.0f, 0.0f, 1.0f });
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				glDrawElements(GL_TRIANGLES, (vertices.size() / 2) * 3, GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, (vertices.size()) * 3, GL_UNSIGNED_INT, 0);
 			}
+		}
+
+		void draw(bool mesh = false) const {
+			draw(*shaderProgram.get(), mesh);
 		}
 
 		virtual void triangulate() {
 			//set up vectors used for triangulation
 			std::vector<unsigned int> n; //maps the vertices of the polygon left while cutting ears, to the vertices of the actual polygon data
-			n.resize(vertices.size() / 2);
+			n.resize(vertices.size());
 			std::iota(n.begin(), n.end(), 0);
-
-			std::vector<lgm::vector2f> v; //copy of vertices, formatted to a shape more comfortable to work with
-			for (int i = 0; i < vertices.size() / 2; i++) v.push_back({ vertices[i * 2], vertices[i * 2 + 1] });
 
 			std::vector<unsigned int> triangles; //will store the resulting ears in groups of 3
 
@@ -96,14 +100,14 @@ namespace lgm {
 				unsigned int wi0 = i % n.size(), wi1 = (i + 1) % n.size(), wi2 = (i + 2) % n.size();
 
 				//first check -- acute angle?
-				float ang = signedAngle(v[n[wi0]], v[n[wi1]], v[n[wi2]]);
+				float ang = signedAngle(vertices[n[wi0]], vertices[n[wi1]], vertices[n[wi2]]);
 				if (ang <= 0 || ang >= std::numbers::pi) continue; //assumes vertices are in clockwise order
 
 				//second check -- is ear?
 				if ([&]()->bool {
 					for (int j = 0; j < n.size() - 2; j++) {
 						if (j - i >= 0 && j - i <= 2) continue; //point is part of the triangle, ignore it
-						if (pointInTriangle(v[n[j]], v[n[wi0]], v[n[wi1]], v[n[wi2]])) return false; //point inside triangle
+						if (pointInTriangle(vertices[n[j]], vertices[n[wi0]], vertices[n[wi1]], vertices[n[wi2]])) return false; //point inside triangle
 					}
 					return true;
 				}()) { //if-statemenet executed only if triangle doesn't contain any other vertices
@@ -116,7 +120,7 @@ namespace lgm {
 			}
 
 			//copy the vertex info into buffers
-			vbo.constructData(vertices.data(), vertices.size() * sizeof(float));
+			vbo.constructData((float*)vertices.data(), vertices.size() * sizeof(float) * 2);
 			ibo.constructData(triangles.data(), triangles.size() * sizeof(unsigned int));
 
 			vbo.addAttrib({ 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0 });
@@ -131,12 +135,17 @@ namespace lgm {
 		lgm::VAO vao;
 		lgm::VBO vbo;
 		lgm::IBO ibo;
+		
+		static std::unique_ptr<lgm::ShaderProgram> shaderProgram;
 
 		// shape
 		lgm::vector2f position{ 0, 0 };
-		std::vector<float> vertices;
+		std::vector<lgm::vector2f> vertices;
 
 		lgm::color color;
 
 	};
+
+	std::unique_ptr<lgm::ShaderProgram> Polygon::shaderProgram;// = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
+
 }

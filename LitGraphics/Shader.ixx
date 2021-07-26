@@ -67,6 +67,17 @@ namespace lgm {
 		ShaderProgram() {
 			program = glCreateProgram();
 		}
+		//ShaderProgram() = delete;
+
+		ShaderProgram(const std::string_view vert, const std::string_view frag) {
+			program = glCreateProgram();
+
+			lgm::Shader vertexShader(GL_VERTEX_SHADER, vert);
+			lgm::Shader fragmentShader(GL_FRAGMENT_SHADER, frag);
+
+			*this << vertexShader.get() << fragmentShader.get();
+			link();
+		}
 
 		ShaderProgram& operator<<(const GLuint shader) {
 			glAttachShader(program, shader);
