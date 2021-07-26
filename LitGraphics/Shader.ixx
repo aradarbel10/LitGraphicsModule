@@ -17,12 +17,14 @@ namespace lgm {
 			shader = glCreateShader(type);
 			const char* source;
 
-			loadFromFile(path, &source);
+			if (loadFromFile(path, &source)) {
+				glShaderSource(shader, 1, &source, NULL);
+				glCompileShader(shader);
 
-			glShaderSource(shader, 1, &source, NULL);
-			glCompileShader(shader);
+				delete source;
+			}
 
-			delete source;
+			
 		}
 
 		~Shader() {
@@ -37,11 +39,12 @@ namespace lgm {
 
 		GLuint shader;
 
-		void loadFromFile(const std::string_view dir, const char** out) {
+		bool loadFromFile(const std::string_view dir, const char** out) {
 			std::ifstream file(dir.data(), std::ios::in);
 
 			if (!file.is_open()) {
 				std::cerr << "cannot open file at " << dir << '\n';
+				return false;
 			} else {
 				std::string line;
 				std::string* str = new std::string;
@@ -51,9 +54,10 @@ namespace lgm {
 				}
 				file.close();
 				*out = str->c_str();
+
+				return true;
 			}
 		}
-
 	};
 
 

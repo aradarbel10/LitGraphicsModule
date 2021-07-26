@@ -73,18 +73,11 @@ int main() {
 	lgm::Shader vertexShader(GL_VERTEX_SHADER, "shaders/default_vertex.glsl");
 	lgm::Shader fragmentShader(GL_FRAGMENT_SHADER, "shaders/default_fragment.glsl");
 
-	lgm::Shader meshVertexShader(GL_VERTEX_SHADER, "shaders/mesh_vertex.glsl");
-	lgm::Shader meshFragmentShader(GL_FRAGMENT_SHADER, "shaders/mesh_fragment.glsl");
-
 	// link shaders into one shader program
 
 	lgm::ShaderProgram shaderProgram;
 	shaderProgram << vertexShader.get() << fragmentShader.get();
 	shaderProgram.link();
-
-	lgm::ShaderProgram meshShaderProgram;
-	meshShaderProgram << meshVertexShader.get() << meshFragmentShader.get();
-	meshShaderProgram.link();
 
 	// pack a vertex buffer object which will be sent to the GPU
 	
