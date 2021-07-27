@@ -60,6 +60,7 @@ namespace lgm {
 			sdr.use();
 			vao.bind();
 			sdr.setColorUniform(color);
+			sdr.setTranfsormUniform(transform);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDrawElements(GL_TRIANGLES, (vertices.size()) * 3, GL_UNSIGNED_INT, 0);
 
@@ -115,6 +116,8 @@ namespace lgm {
 			vao.linkBuffer(ibo);
 		}
 		
+		lgm::Transform transform;
+
 	private:
 
 		// rendering
@@ -125,9 +128,7 @@ namespace lgm {
 		//static std::unique_ptr<lgm::ShaderProgram> shaderProgram;
 
 		// shape
-		Transform transform;
 		std::vector<lgm::vector2f> vertices;
-
 		lgm::color color;
 
 	};

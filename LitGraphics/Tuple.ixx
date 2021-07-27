@@ -31,8 +31,11 @@ export namespace lgm {
 	class Transform {
 	public:
 
-		lgm::vector2f position = { 0, 0 };
-		lgm::vector2f scale = { 0, 0 };
+		Transform() = default;
+		Transform(lgm::vector2f&& p, lgm::vector2f&& s, float a) : position(p), scale(s), angle(a) {} ;
+
+		lgm::vector2f position{ 0, 0 };
+		lgm::vector2f scale{ 1, 1 };
 		float angle = 0;
 
 	};

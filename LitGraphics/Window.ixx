@@ -15,7 +15,7 @@ namespace lgm {
 	export class Window {
 	public:
 
-		Window(vector2i size, const std::string& title) {
+		Window(const vector2i& size, const std::string& title) {
 			// initializing GLFW
 			glfwInit();
 
@@ -24,6 +24,7 @@ namespace lgm {
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+			this->size = size;
 			window = glfwCreateWindow(size.x, size.y, title.c_str(), NULL, NULL);
 
 			if (window == NULL) { // error checking
@@ -38,6 +39,7 @@ namespace lgm {
 
 			// load shaders
 			polygonShader = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
+			polygonShader.get()->setWinSizeUniform({ (float)size.x / 2.f, (float)size.y / 2.f });
 		}
 
 		bool isOpen() {
@@ -61,7 +63,7 @@ namespace lgm {
 		}
 
 		void draw(lgm::Polygon& p) {
-			p.draw(*polygonShader.get(), true);
+			p.draw(*polygonShader.get(), false);
 		}
 
 		float getDeltaTime() {
@@ -76,6 +78,8 @@ namespace lgm {
 		}
 
 	private:
+
+		lgm::vector2i size{ 0, 0 };
 
 		GLFWwindow* window;
 		lgm::color background{0.78f, 0.78f, 0.78f, 1.0f};
