@@ -7,6 +7,8 @@ module;
 export module Window;
 
 import Tuple;
+import Polygon;
+import Shader;
 
 namespace lgm {
 
@@ -33,6 +35,9 @@ namespace lgm {
 			// load openGL using glad
 			gladLoadGL();
 			glViewport(0, 0, size.x, size.y);
+
+			// load shaders
+			polygonShader = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
 		}
 
 		bool isOpen() {
@@ -45,10 +50,22 @@ namespace lgm {
 			// clear window to a color
 			glClearColor(background.r, background.g, background.b, background.a);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			// calculate delta time
+			dtime = glfwGetTime();
+			glfwSetTime(0);
 		}
 
 		void setBackgroundColor(lgm::color c) {
 			background = c;
+		}
+
+		void draw(lgm::Polygon& p) {
+			p.draw(*polygonShader.get(), true);
+		}
+
+		float getDeltaTime() {
+			return dtime;
 		}
 
 		~Window() {
@@ -62,6 +79,9 @@ namespace lgm {
 
 		GLFWwindow* window;
 		lgm::color background{0.78f, 0.78f, 0.78f, 1.0f};
+
+		std::unique_ptr<lgm::ShaderProgram> polygonShader;
+		float dtime = 0;
 
 	};
 }

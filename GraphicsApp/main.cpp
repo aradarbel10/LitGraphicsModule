@@ -37,10 +37,12 @@ int main() {
 		glfwPollEvents();
 
 		// Draw Shapes!
-		triangulationTest.draw(true);
+		window.draw(triangulationTest);
 
 		// swap buffers
 		window.display();
+
+		std::cout << "fps: " << 1.f / window.getDeltaTime() << '\n';
 	}
 
 	return 0;

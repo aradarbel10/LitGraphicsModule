@@ -101,6 +101,17 @@ namespace lgm {
 			glUniform4f(loc, c.r, c.g, c.b, c.a);
 		}
 
+		void setTranfsormUniform(const lgm::Transform t) const {
+			GLuint loc = glGetUniformLocation(program, "tpos");
+			glUniform2f(loc, t.position.x, t.position.y);
+
+			loc = glGetUniformLocation(program, "tscale");
+			glUniform2f(loc, t.scale.x, t.scale.y);
+
+			loc = glGetUniformLocation(program, "trot");
+			glUniform1f(loc, t.angle);
+		}
+
 		~ShaderProgram() {
 			glDeleteProgram(program);
 		}

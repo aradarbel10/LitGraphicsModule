@@ -17,11 +17,9 @@ export module Polygon;
 
 import VertexArray;
 import Tuple;
-import Window;
 import Shader;
 
 namespace lgm {
-
 
 	float det2(const vector2f& col1, const vector2f& col2) {
 		return col1.x * col2.y - col1.y * col2.x;
@@ -43,10 +41,10 @@ namespace lgm {
 	public:
 
 		Polygon() {
-			if (!shaderProgram) {
+			/*if (!shaderProgram) {
 				shaderProgram = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
 				//std::cout << "first polygon initialized!\n";
-			}
+			}*/
 		}
 
 		Polygon& pushVertex(const lgm::vector2f& point) {
@@ -56,14 +54,6 @@ namespace lgm {
 
 		void setColor(const lgm::color& col) {
 			color = col;
-		}
-
-		void setPosition(const lgm::vector2f& p) {
-			position = p;
-		}
-
-		lgm::vector2f getPosition() const {
-			return position;
 		}
 
 		void draw(lgm::ShaderProgram& sdr, bool drawMesh = false) const {
@@ -78,10 +68,6 @@ namespace lgm {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDrawElements(GL_TRIANGLES, (vertices.size()) * 3, GL_UNSIGNED_INT, 0);
 			}
-		}
-
-		void draw(bool mesh = false) const {
-			draw(*shaderProgram.get(), mesh);
 		}
 
 		virtual void triangulate() {
@@ -128,7 +114,7 @@ namespace lgm {
 			vao.linkBuffer(vbo);
 			vao.linkBuffer(ibo);
 		}
-
+		
 	private:
 
 		// rendering
@@ -136,16 +122,16 @@ namespace lgm {
 		lgm::VBO vbo;
 		lgm::IBO ibo;
 		
-		static std::unique_ptr<lgm::ShaderProgram> shaderProgram;
+		//static std::unique_ptr<lgm::ShaderProgram> shaderProgram;
 
 		// shape
-		lgm::vector2f position{ 0, 0 };
+		Transform transform;
 		std::vector<lgm::vector2f> vertices;
 
 		lgm::color color;
 
 	};
 
-	std::unique_ptr<lgm::ShaderProgram> Polygon::shaderProgram;// = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
+	//std::unique_ptr<lgm::ShaderProgram> Polygon::shaderProgram;// = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
 
 }

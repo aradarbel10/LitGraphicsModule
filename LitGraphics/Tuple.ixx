@@ -28,6 +28,15 @@ export namespace lgm {
 	typedef vector3<float> vector3f;
 	typedef vector3<unsigned int> vector3u;
 
+	class Transform {
+	public:
+
+		lgm::vector2f position = { 0, 0 };
+		lgm::vector2f scale = { 0, 0 };
+		float angle = 0;
+
+	};
+
 	struct color {
 		color(float _r, float _g, float _b, float _a = 1.0f)
 			: r(_r), g(_g), b(_b), a(_a) {};
