@@ -120,7 +120,7 @@ namespace lgm {
 			glUseProgram(program);
 		}
 
-		void setColorUniform(const lgm::color& c) {
+		void setColorUniform(const lgm::color& c) const {
 			glUniform4f(u_color, c.r, c.g, c.b, c.a);
 		}
 

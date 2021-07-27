@@ -11,5 +11,5 @@ uniform float trot;
 void main() {
 	vec2 transformed = mat2(tscale.x, 0, 0, tscale.y) * mat2(cos(trot), sin(trot), -sin(trot), cos(trot)) * aPos;
 	transformed += tpos;
-	gl_Position = vec4(transformed.x / 300, transformed.y / 300, 0.0, 1.0);
+	gl_Position = vec4(transformed.x / wsize.x, transformed.y / wsize.y, 0.0, 1.0);
 }

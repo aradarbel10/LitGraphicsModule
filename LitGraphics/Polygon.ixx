@@ -56,11 +56,12 @@ namespace lgm {
 			color = col;
 		}
 
-		void draw(lgm::ShaderProgram& sdr, bool drawMesh = false) const {
+		void draw(lgm::ShaderProgram& sdr, lgm::vector2i wsize, bool drawMesh = false) const {
 			sdr.use();
 			vao.bind();
 			sdr.setColorUniform(color);
 			sdr.setTranfsormUniform(transform);
+			sdr.setWinSizeUniform({ (float)wsize.x / 2.f, (float)wsize.y / 2.f });
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDrawElements(GL_TRIANGLES, (vertices.size()) * 3, GL_UNSIGNED_INT, 0);
 
