@@ -40,16 +40,19 @@ namespace lgm {
 	export class Polygon {
 	public:
 
-		Polygon() {
-			/*if (!shaderProgram) {
-				shaderProgram = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
-				//std::cout << "first polygon initialized!\n";
-			}*/
-		}
+		Polygon() {}
 
 		Polygon& pushVertex(const lgm::vector2f& point) {
 			vertices.push_back(point);
 			return *this;
+		}
+
+		template<size_t N>
+		void setVertices(const lgm::vector2f (&arr)[N]) {
+			for (const auto& v : arr) {
+				pushVertex(v);
+			}
+			triangulate();
 		}
 
 		void setColor(const lgm::color& col) {
@@ -93,7 +96,7 @@ namespace lgm {
 
 				//second check -- is ear?
 				if ([&]()->bool {
-					for (int j = 0; j < n.size() - 2; j++) {
+					for (int j = 0; j < n.size(); j++) {
 						if (j - i >= 0 && j - i <= 2) continue; //point is part of the triangle, ignore it
 						if (pointInTriangle(vertices[n[j]], vertices[n[wi0]], vertices[n[wi1]], vertices[n[wi2]])) return false; //point inside triangle
 					}
@@ -126,14 +129,10 @@ namespace lgm {
 		lgm::VBO vbo;
 		lgm::IBO ibo;
 		
-		//static std::unique_ptr<lgm::ShaderProgram> shaderProgram;
-
 		// shape
 		std::vector<lgm::vector2f> vertices;
 		lgm::color color;
 
 	};
-
-	//std::unique_ptr<lgm::ShaderProgram> Polygon::shaderProgram;// = std::make_unique<lgm::ShaderProgram>("shaders/default_vertex.glsl", "shaders/default_fragment.glsl");
 
 }
