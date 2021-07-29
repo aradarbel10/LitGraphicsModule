@@ -4,6 +4,7 @@ module;
 #include <numbers>
 #include <numeric>
 #include <span>
+#include <utility>
 
 #include <vector>
 #include <map>
@@ -42,15 +43,21 @@ namespace lgm {
 
 		Polygon() {}
 
-		Polygon& pushVertex(const lgm::vector2f& point) {
+		Polygon& pushVertex(lgm::vector2f point) {
 			vertices.push_back(point);
 			return *this;
 		}
 
+		/*Polygon& pushTexCoord(lgm::vector2f point) {
+			texCoords.push_back(point);
+			return *this;
+		}*/
+
 		template<size_t N>
 		void setVertices(const lgm::vector2f (&arr)[N]) {
+			vertices.reserve(N);
 			for (const auto& v : arr) {
-				pushVertex(v);
+				vertices.emplace_back(v);
 			}
 			triangulate();
 		}
@@ -110,17 +117,30 @@ namespace lgm {
 				}
 			}
 
-			//copy the vertex info into buffers
 			vbo.constructData((float*)vertices.data(), vertices.size() * sizeof(float) * 2);
 			ibo.constructData(triangles.data(), triangles.size() * sizeof(unsigned int));
 
-			vbo.addAttrib({ 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0 });
+			vbo.setAttrib(0, { 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0 });
 
 			vao.linkBuffer(vbo);
 			vao.linkBuffer(ibo);
 		}
 		
+		void calcTextureCoords() {
+			texCoords.clear();
+			texCoords.reserve(vertices.size());
+			for (const auto& v : vertices) {
+				texCoords.emplace_back(v.x / 600.f, v.y / 600.f);
+			}
+
+			texture_vbo.constructData((float*)texCoords.data(), texCoords.size() * sizeof(float) * 2);
+			texture_vbo.setAttrib(1, { 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0 });
+
+			vao.linkBuffer(texture_vbo);
+		}
+
 		lgm::Transform transform;
+		lgm::Transform texture_tranform;
 
 	private:
 
@@ -128,9 +148,12 @@ namespace lgm {
 		lgm::VAO vao;
 		lgm::VBO vbo;
 		lgm::IBO ibo;
+
+		lgm::VBO texture_vbo;
 		
 		// shape
 		std::vector<lgm::vector2f> vertices;
+		std::vector<lgm::vector2f> texCoords;
 		lgm::color color;
 
 	};

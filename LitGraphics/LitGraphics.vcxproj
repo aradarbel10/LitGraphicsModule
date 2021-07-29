@@ -19,8 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\glLibs\glad\src\glad.c" />
     <ClCompile Include="Polygon.ixx" />
     <ClCompile Include="Shader.ixx" />
+    <ClCompile Include="stbi.c" />
+    <ClCompile Include="Texture.ixx" />
     <ClCompile Include="Tuple.ixx" />
     <ClCompile Include="VertexArray.ixx" />
     <ClCompile Include="Window.ixx" />

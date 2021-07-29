@@ -1,8 +1,12 @@
 module;
 #include <glad/glad.h>
-#include <iostream>
+
 #include <span>
 #include <vector>
+#include <map>
+
+#include <iostream>
+#include <format>
 
 export module VertexArray;
 
@@ -48,17 +52,17 @@ namespace lgm {
 			glBindBuffer(B, 0);
 		}
 
-		size_t addAttrib(const VertexAttribFormat& attr) {
+		/*size_t addAttrib(VertexAttribFormat&& attr) {
 			attribs.push_back(attr);
 			return attribs.size() - 1;
-		}
+		}*/
 
-		size_t setAttrib(GLuint index, const VertexAttribFormat& attr) {
+		size_t setAttrib(GLuint index, VertexAttribFormat&& attr) {
 			attribs[index] = attr;
 			return index;
 		}
 
-		const std::vector<VertexAttribFormat>& getAttribs() const {
+		const std::map<int, VertexAttribFormat>& getAttribs() const {
 			return attribs;
 		}
 
@@ -69,7 +73,7 @@ namespace lgm {
 	private:
 
 		GLuint buffer;
-		std::vector<VertexAttribFormat> attribs;
+		std::map<int, VertexAttribFormat> attribs;
 
 	};
 
@@ -88,8 +92,7 @@ namespace lgm {
 			glBindVertexArray(vao);
 			vbo.bind();
 
-			for (int i = 0; i < vbo.getAttribs().size(); i++) {
-				const auto& attr = vbo.getAttribs()[i];
+			for (auto const& [i, attr] : vbo.getAttribs()) {
 				glVertexAttribPointer(i, attr.size, attr.type, attr.normalized, attr.stride, attr.pointer);
 				glEnableVertexAttribArray(i);
 			}

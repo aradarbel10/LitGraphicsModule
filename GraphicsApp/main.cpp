@@ -2,9 +2,6 @@
 #include <numbers>
 #include <string>
 
-//#include <glad/glad.h>
-//#include <GLFW/glfw3.h>
-
 import Shader;
 import VertexArray;
 import Window;
@@ -39,6 +36,7 @@ int main() {
 	Donut.transform.scale = { 8.f, 8.f };
 	Donut.setVertices({ {0, 3}, {3, 3}, {3, -3}, {-3, -3}, {-3, 3}, {-0, 3},
 		{-0, 2}, {-2, 2}, {-2, -2}, {2, -2}, {2, 2}, {0, 2} });
+	Donut.calcTextureCoords();
 
 	// main loop
 	while (window.isOpen()) {
