@@ -1,6 +1,6 @@
-export module Tuple;
+#pragma once
 
-export namespace lgm {
+namespace lgm {
 
 	template <typename T>
 	struct vector2 {

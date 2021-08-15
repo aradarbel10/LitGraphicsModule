@@ -1,4 +1,5 @@
-module;
+#pragma once
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -10,15 +11,13 @@ module;
 #include <iostream>
 #include <format>
 
-export module Window;
-
-import Tuple;
-import Polygon;
-import Shader;
+#include "Tuple.h"
+#include "Polygon.h"
+#include "Shader.h"
 
 namespace lgm {
 
-	export enum Key {
+	enum Key {
 		Unknown = -1,
 		Space = 32, Apostrophe = 39, Comma = 44, Minus, Period, Slash,
 		Num0, Num1, Num2, Num3, Num4, Num5, Num6, Num7, Num8, Num9,
@@ -35,11 +34,11 @@ namespace lgm {
 		LeftShift = 340, LeftCtrl, LeftAlt, LeftSuper, RightShift, RightCtrl, RightAlt, RightSuper, Menu
 	};
 
-	export enum Mouse {
+	enum Mouse {
 		Left = 0, Right, Middle
 	};
 
-	export class Window {
+	class Window {
 	public:
 
 		static void keyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {

@@ -1,4 +1,5 @@
-module;
+#pragma once
+
 #include <glad/glad.h>
 
 #include <string>
@@ -10,12 +11,10 @@ module;
 #include <iostream>
 #include <format>
 
-export module Shader;
-
-import Tuple;
+#include "Tuple.h"
 
 namespace lgm {
-	export class Shader {
+	class Shader {
 	public:
 
 		Shader(GLuint type, std::string_view path) {
@@ -79,7 +78,7 @@ namespace lgm {
 	};
 
 
-	export class ShaderProgram {
+	class ShaderProgram {
 	public:
 
 		ShaderProgram() {
@@ -101,6 +100,11 @@ namespace lgm {
 			u_tscale = glGetUniformLocation(program, "tscale");
 			u_trot = glGetUniformLocation(program, "trot");
 			u_wsize = glGetUniformLocation(program, "wsize");
+
+			u_tex_tpos = glGetUniformLocation(program, "tex_tpos");
+			u_tex_tscale = glGetUniformLocation(program, "tex_tscale");
+			u_tex_trot = glGetUniformLocation(program, "tex_trot");
+			u_has_texture = glGetUniformLocation(program, "has_texture");
 		}
 
 		ShaderProgram& operator<<(const GLuint shader) {
@@ -130,6 +134,17 @@ namespace lgm {
 			glUniform1f(u_trot, t.angle);
 		}
 
+		void setTextureTransformUniform(const lgm::Transform& t) const {
+			glUniform2f(u_tex_tpos, t.position.x, t.position.y);
+			glUniform2f(u_tex_tscale, t.scale.x, t.scale.y);
+			glUniform1f(u_tex_trot, t.angle);
+			glUniform1i(u_has_texture, true);
+		}
+
+		void unsetHasTextureUniform() const {
+			glUniform1i(u_has_texture, false);
+		}
+
 		void setWinSizeUniform(const lgm::vector2f& s) const {
 			glUniform2f(u_wsize, s.x, s.y);
 		}
@@ -140,8 +155,19 @@ namespace lgm {
 
 	private:
 
-		GLuint program;
-		GLuint u_color, u_tpos, u_tscale, u_trot, u_wsize;
+		GLuint program = 0;
+
+		GLuint u_color = 0;
+		GLuint u_wsize = 0;
+
+		GLuint u_tpos = 0;
+		GLuint u_tscale = 0;
+		GLuint u_trot = 0;
+
+		GLuint u_tex_tpos = 0;
+		GLuint u_tex_tscale = 0;
+		GLuint u_tex_trot = 0;
+		GLuint u_has_texture = 0;
 
 	};
 }

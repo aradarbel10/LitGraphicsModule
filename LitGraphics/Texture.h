@@ -1,23 +1,23 @@
-module;
+#pragma once
 
 #include <glad/glad.h>
 #include <stbi/stb_image.h>
 
 #include <string_view>
 
-export module Texture;
-
-import Tuple;
+#include "Tuple.h"
 
 namespace lgm {
-	export class Texture {
+	class Texture {
 	public:
 
 		Texture(std::string_view path) {
-			stbi_load(path.data(), &width, &height, &num_ch, 0);
+			data = stbi_load(path.data(), &width, &height, &num_ch, 0);
 
 			glGenTextures(1, &tex);
 			glBindTexture(GL_TEXTURE_2D, tex);
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
@@ -32,6 +32,14 @@ namespace lgm {
 
 		lgm::vector2i inline size() {
 			return { width, height };
+		}
+
+		void bind() const {
+			glBindTexture(GL_TEXTURE_2D, tex);
+		}
+
+		static void unbind() {
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
 		~Texture() {

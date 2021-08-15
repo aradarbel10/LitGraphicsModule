@@ -15,19 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VertexArray.ixx">
+    <ClCompile Include="VertexArray.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.ixx">
+    <ClCompile Include="Shader.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Window.ixx">
+    <ClCompile Include="Window.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tuple.ixx">
+    <ClCompile Include="Tuple.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Polygon.ixx">
+    <ClCompile Include="Polygon.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\glLibs\glad\src\glad.c">
@@ -36,7 +36,7 @@
     <ClCompile Include="stbi.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.ixx">
+    <ClCompile Include="Texture.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

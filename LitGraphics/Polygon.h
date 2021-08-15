@@ -1,4 +1,4 @@
-module;
+#pragma once
 
 #include <glad/glad.h>
 #include <numbers>
@@ -10,15 +10,15 @@ module;
 #include <map>
 #include <algorithm>
 #include <iterator>
+#include <optional>
 
 #include <iostream>
 #include <format>
 
-export module Polygon;
-
-import VertexArray;
-import Tuple;
-import Shader;
+#include "VertexArray.h"
+#include "Tuple.h"
+#include "Shader.h"
+#include "Texture.h"
 
 namespace lgm {
 
@@ -38,22 +38,20 @@ namespace lgm {
 		return atan2f(det2(O - A, O - B), (O - A).x * (O - B).x + (O - A).y * (O - B).y);
 	}
 
-	export class Polygon {
+	class Polygon {
 	public:
 
-		Polygon() {}
+		template <size_t N>
+		Polygon(const lgm::vector2f(&arr)[N]) {
+			setVertices(arr);
+		}
 
 		Polygon& pushVertex(lgm::vector2f point) {
 			vertices.push_back(point);
 			return *this;
 		}
 
-		/*Polygon& pushTexCoord(lgm::vector2f point) {
-			texCoords.push_back(point);
-			return *this;
-		}*/
-
-		template<size_t N>
+		template <size_t N>
 		void setVertices(const lgm::vector2f (&arr)[N]) {
 			vertices.reserve(N);
 			for (const auto& v : arr) {
@@ -69,9 +67,19 @@ namespace lgm {
 		void draw(lgm::ShaderProgram& sdr, lgm::vector2i wsize, bool drawMesh = false) const {
 			sdr.use();
 			vao.bind();
+
 			sdr.setColorUniform(color);
 			sdr.setTranfsormUniform(transform);
 			sdr.setWinSizeUniform({ (float)wsize.x / 2.f, (float)wsize.y / 2.f });
+			
+			if (texture.has_value()) {
+				sdr.setTextureTransformUniform(texture_transform);
+				texture->bind();
+			} else {
+				sdr.unsetHasTextureUniform();
+				lgm::Texture::unbind();
+			}
+
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDrawElements(GL_TRIANGLES, (vertices.size()) * 3, GL_UNSIGNED_INT, 0);
 
@@ -95,7 +103,7 @@ namespace lgm {
 				i++;
 
 				//calculate indices with offset, and warp then if they go out of range ("warped indices")
-				unsigned int wi0 = i % n.size(), wi1 = (i + 1) % n.size(), wi2 = (i + 2) % n.size();
+				unsigned int wi0 = i % n.size(), wi1 = ((size_t)i + 1) % n.size(), wi2 = ((size_t)i + 2) % n.size();
 
 				//first check -- acute angle?
 				float ang = signedAngle(vertices[n[wi0]], vertices[n[wi1]], vertices[n[wi2]]);
@@ -118,6 +126,7 @@ namespace lgm {
 			}
 
 			vbo.constructData((float*)vertices.data(), vertices.size() * sizeof(float) * 2);
+			//vbo = std::move(lgm::VBO((float*)vertices.data(), vertices.size() * sizeof(float) * 2));
 			ibo.constructData(triangles.data(), triangles.size() * sizeof(unsigned int));
 
 			vbo.setAttrib(0, { 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0 });
@@ -126,21 +135,12 @@ namespace lgm {
 			vao.linkBuffer(ibo);
 		}
 		
-		void calcTextureCoords() {
-			texCoords.clear();
-			texCoords.reserve(vertices.size());
-			for (const auto& v : vertices) {
-				texCoords.emplace_back(v.x / 600.f, v.y / 600.f);
-			}
-
-			texture_vbo.constructData((float*)texCoords.data(), texCoords.size() * sizeof(float) * 2);
-			texture_vbo.setAttrib(1, { 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0 });
-
-			vao.linkBuffer(texture_vbo);
+		void setTexture(lgm::Texture& tex) {
+			texture = tex;
 		}
 
 		lgm::Transform transform;
-		lgm::Transform texture_tranform;
+		lgm::Transform texture_transform{ { 0.5f, 0.5f }, { 1.f, 1.f }, 0.f };
 
 	private:
 
@@ -149,11 +149,10 @@ namespace lgm {
 		lgm::VBO vbo;
 		lgm::IBO ibo;
 
-		lgm::VBO texture_vbo;
+		std::optional<lgm::Texture> texture;
 		
 		// shape
 		std::vector<lgm::vector2f> vertices;
-		std::vector<lgm::vector2f> texCoords;
 		lgm::color color;
 
 	};

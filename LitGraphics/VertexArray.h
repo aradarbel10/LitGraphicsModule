@@ -1,4 +1,5 @@
-module;
+#pragma once
+
 #include <glad/glad.h>
 
 #include <span>
@@ -8,11 +9,11 @@ module;
 #include <iostream>
 #include <format>
 
-export module VertexArray;
-
 namespace lgm {
 	
 	struct VertexAttribFormat {
+		VertexAttribFormat() = default;
+
 		VertexAttribFormat(GLint _size, GLenum _type, GLboolean _normalized, GLsizei _stride, const GLvoid* _pointer) 
 			: size(_size), type(_type), normalized(_normalized), stride(_stride), pointer(_pointer) {};
 
@@ -23,7 +24,7 @@ namespace lgm {
 		const GLvoid* pointer;
 	};
 
-	export template<typename T, GLuint B>
+	template<typename T, GLuint B>
 	class BufferObject {
 	public:
 
@@ -31,6 +32,10 @@ namespace lgm {
 
 		BufferObject(std::span<T> vertices) {
 			constructData(vertices.data(), vertices.size_bytes());
+		}
+
+		BufferObject(T* data, size_t size) {
+			constructData(data, size);
 		}
 
 		void constructData(T* data, size_t size) {
@@ -52,11 +57,6 @@ namespace lgm {
 			glBindBuffer(B, 0);
 		}
 
-		/*size_t addAttrib(VertexAttribFormat&& attr) {
-			attribs.push_back(attr);
-			return attribs.size() - 1;
-		}*/
-
 		size_t setAttrib(GLuint index, VertexAttribFormat&& attr) {
 			attribs[index] = attr;
 			return index;
@@ -77,10 +77,10 @@ namespace lgm {
 
 	};
 
-	export typedef BufferObject<GLfloat, GL_ARRAY_BUFFER> VBO;
-	export typedef BufferObject<GLuint, GL_ELEMENT_ARRAY_BUFFER> IBO;
+	typedef BufferObject<GLfloat, GL_ARRAY_BUFFER> VBO;
+	typedef BufferObject<GLuint, GL_ELEMENT_ARRAY_BUFFER> IBO;
 
-	export class VAO {
+	class VAO {
 	public:
 
 		VAO() {
